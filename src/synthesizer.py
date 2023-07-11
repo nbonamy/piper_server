@@ -10,12 +10,16 @@ class Synthesizer:
     self._config = config
     self._pipers = {}
 
-  def synthesize(self, text, voice=None):
+  def synthesize(self, text, lang='en-US', voice=None):
 
     # first select the voice
     if voice is None:
-      voice = self._config.get('voice', 'ryan')
-    onnx = f'voices/{voice}/en_US-{voice}-medium.onnx'
+      voice = self._config.get(f'voices.{lang}', 'ryan/medium')
+    tokens = voice.split('/')
+    voice = tokens[0]
+    quality = tokens[1] if len(tokens) > 1 else 'medium'
+    onnx = f'voices/{voice}/{lang.replace("-", "_")}-{voice}-{quality}.onnx'
+    print(f'Using voice {voice} with quality {quality} for language {lang}: {onnx}')
 
     # does text have punctuation?
     # piper-python doesn't like punctuation
@@ -90,3 +94,4 @@ class Synthesizer:
     o += bytes("data",'ascii')                                              # (4byte) Data Chunk Marker
     o += (datasize).to_bytes(4,'little')                                    # (4byte) Data size in bytes
     return o
+  

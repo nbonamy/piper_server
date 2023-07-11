@@ -44,6 +44,7 @@ class ApiHandler(http.server.BaseHTTPRequestHandler):
       # get parameters
       text = self.get_parameters().get('text')
       voice = self.get_parameters().get('voice')
+      lang = self.get_parameters().get('lang', 'en-US')
       print(f'Text to synthetize received: "{text[0:256]}"')
 
       # start headers
@@ -53,10 +54,10 @@ class ApiHandler(http.server.BaseHTTPRequestHandler):
 
       # now write bytes as they come
       try:
-        for bytes in self.server.processor(text, voice):
+        for bytes in self.server.processor(text, lang, voice):
           self.request.sendall(bytes)
-      except:
-        pass
+      except Exception as e:
+        print(e)
       
       # done
       print(f'"{text[0:32]}..." Done!')

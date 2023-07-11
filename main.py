@@ -15,7 +15,7 @@ def main():
   synthesizer = Synthesizer(config)
 
   # http server
-  server = HttpServer(config, lambda text, voice: synthesizer.synthesize(text, voice))
+  server = HttpServer(config, lambda text, lang, voice: synthesizer.synthesize(text, lang, voice))
   server.start()
 
   # wait for ctrl-c
