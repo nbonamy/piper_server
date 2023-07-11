@@ -19,7 +19,7 @@ class Synthesizer:
 
     # does text have punctuation?
     # piper-python doesn't like punctuation
-    dotless = text.strip('.')
+    dotless = text.strip(punctuation)
     has_punctuation = any(p in dotless for p in punctuation)
 
     # is text not too long?
@@ -60,14 +60,14 @@ class Synthesizer:
       if len(data) != 0:
         yield data
 
-  def _synthesize_lib(self, text, voice):
+  def _synthesize_lib(self, text, onnx):
 
     # do we have a piper instance
-    if voice in self._pipers:
-      piper = self._pipers[voice]
+    if onnx in self._pipers:
+      piper = self._pipers[onnx]
     else:
-      piper = Piper(f'./{voice}')
-      self._pipers[voice] = piper
+      piper = Piper(onnx)
+      self._pipers[onnx] = piper
 
     # now synthesize  
     #synthesize = partial(piper.synthesize)
