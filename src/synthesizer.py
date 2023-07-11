@@ -55,12 +55,10 @@ class Synthesizer:
     yield self._wave_header(22050, 16, 1)
 
     # now bytes
-    while True:
+    while piper_process.poll() is None:
       data = piper_process.stdout.read1()
       if len(data) != 0:
         yield data
-      if piper_process.poll() is not None:
-        break
 
   def _synthesize_lib(self, text, voice):
 
