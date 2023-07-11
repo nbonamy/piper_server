@@ -4,6 +4,7 @@ import os
 import wave
 import subprocess
 from piper import Piper
+from string import punctuation
 
 class Synthesizer:
     
@@ -18,8 +19,14 @@ class Synthesizer:
       voice = self._config.get('voice', 'ryan')
     onnx = f'voices/{voice}/en_US-{voice}-medium.onnx'
 
+    # does text have punctuation?
+    # piper-python doesn't like punctuation
+    # but is a bit faster than the command line
+    dotless = text.strip('.')
+    has_punctuation = any(p in dotless for p in punctuation)
+
     # check if command is available
-    if os.path.exists('./bin/piper'):
+    if has_punctuation and os.path.exists('./bin/piper'):
       return self._synthesize_cmd(text, onnx)
     else:
       return self._synthesize_lib(text, onnx)
