@@ -44,16 +44,22 @@ class ApiHandler(http.server.BaseHTTPRequestHandler):
       # get parameters
       text = self.get_parameters().get('text')
       voice = self.get_parameters().get('voice')
-      print(f'Text to synthetize received: "{text}"')
+      print(f'Text to synthetize received: "{text[0:256]}"')
 
       # start headers
       self.send_response(HTTPStatus.OK)
       self.send_header('Content-type', 'application/octet-stream')
       self.end_headers()
 
-      # now sentence by sentence
-      wav_bytes = self.server.processor(text, voice)
-      self.wfile.write(wav_bytes)
+      # now write bytes as they come
+      try:
+        for bytes in self.server.processor(text, voice):
+          self.request.sendall(bytes)
+      except:
+        pass
+      
+      # done
+      print(f'"{text[0:32]}..." Done!')
 
   def error(self, code=HTTPStatus.INTERNAL_SERVER_ERROR):
     self.send_response(code)
